@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -159,6 +160,8 @@ nav.scrolled{background:rgba(24,20,12,.88);backdrop-filter:blur(12px);padding:14
 .submit-btn:hover{background:#1e5e3a;transform:translateY(-1px)}
 .submit-btn:active{transform:translateY(0)}
 .submit-btn:disabled{opacity:.6;cursor:default;transform:none}
+.form-note{font-size:12px;line-height:1.5;color:rgba(13,16,35,.45);margin-top:-4px}
+.cf-turnstile{min-height:65px}
 .form-success{display:none;text-align:center;padding:32px;background:rgba(22,72,47,.06);
   border-radius:12px;border:1.5px solid rgba(22,72,47,.15)}
 .form-success .check{font-size:32px;margin-bottom:12px}
@@ -339,9 +342,17 @@ footer .ft-reg{font-size:11px;color:rgba(255,255,255,.2);letter-spacing:.02em}
           <label data-pt="Mensagem" data-en="Message">Mensagem</label>
           <textarea name="mensagem" required placeholder="" data-pt-placeholder="Como podemos ajudá-lo?" data-en-placeholder="How can we help you?"></textarea>
         </div>
+        <!-- Cloudflare Turnstile — privacy-friendly CAPTCHA. Replace the sitekey
+             with your real one from the Cloudflare dashboard (it is public). -->
+        <div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITEKEY" data-theme="light"></div>
         <button class="submit-btn" type="submit">
           <span data-pt="Enviar mensagem" data-en="Send message">Enviar mensagem</span>
         </button>
+        <p class="form-note"
+           data-pt="Os seus dados são usados apenas para responder ao seu contacto. Não os partilhamos com terceiros."
+           data-en="Your details are used only to reply to your enquiry. We do not share them with third parties.">
+          Os seus dados são usados apenas para responder ao seu contacto. Não os partilhamos com terceiros.
+        </p>
       </form>
       <div class="form-success" id="form-success">
         <div class="check">✓</div>
@@ -410,28 +421,33 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 // desync on the loop seam — see the C→P→S keyframes above.
 
 // ── Contact form ────────────────────────────────────
-// Formspree: create an account at formspree.io, copy your endpoint and replace
-// YOUR_FORM_ID below. While the placeholder is present the form runs in demo
-// mode (shows the success state without sending anything).
-const FORMSPREE_URL = 'https://formspree.io/f/YOUR_FORM_ID';
-
+// Posts to the Cloudflare Pages Function at /api/contact, which verifies the
+// Turnstile token server-side and relays the message by email (Resend). No
+// third-party form service stores the submission. See functions/api/contact.js.
 $('contact-form').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = this.querySelector('.submit-btn');
   const label = btn.querySelector('[data-pt]');
   const orig = label.textContent;
+  const fail = (msg) => {
+    btn.disabled = false; label.textContent = orig;
+    if (window.turnstile) window.turnstile.reset();
+    alert(msg);
+  };
   btn.disabled = true;
   label.textContent = currentLang === 'pt' ? 'A enviar…' : 'Sending…';
 
-  if (FORMSPREE_URL.includes('YOUR_FORM_ID')) { setTimeout(showSuccess, 800); return; }
-
   try {
-    const res = await fetch(FORMSPREE_URL, {
-      method: 'POST', body: new FormData(this), headers: { Accept: 'application/json' }
-    });
-    if (res.ok) { showSuccess(); }
-    else { btn.disabled = false; label.textContent = orig; alert(currentLang === 'pt' ? 'Erro. Tente novamente.' : 'Error. Please try again.'); }
-  } catch { btn.disabled = false; label.textContent = orig; alert(currentLang === 'pt' ? 'Sem ligação.' : 'No connection.'); }
+    const res = await fetch('/api/contact', { method: 'POST', body: new FormData(this) });
+    if (res.ok) { showSuccess(); return; }
+    if (res.status === 400) {
+      fail(currentLang === 'pt' ? 'Confirme o "não sou um robô" e tente novamente.' : 'Please complete the "I\'m not a robot" check and try again.');
+    } else {
+      fail(currentLang === 'pt' ? 'Não foi possível enviar. Tente novamente mais tarde.' : 'Could not send. Please try again later.');
+    }
+  } catch {
+    fail(currentLang === 'pt' ? 'Sem ligação.' : 'No connection.');
+  }
 });
 
 function showSuccess() {

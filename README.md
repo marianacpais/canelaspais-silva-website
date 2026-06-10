@@ -1,56 +1,94 @@
 # Canelas Pais & Silva — Website
 
-Landing page estática para **Canelas Pais & Silva, Lda** (`www.canelaspais-silva.pt`).
-Implementada a partir do design book da marca (paleta Floresta + Dourado, tipografia Sora).
+Static landing page for **Canelas Pais & Silva, Lda** (`www.canelaspais-silva.pt`).
+Built from the brand design book (Floresta + Dourado palette, Sora typeface).
 
-## Ficheiros
+## Files
 
-| Ficheiro | O que é |
+| Path | What it is |
 |---|---|
-| `index.html` | A página completa — HTML + CSS + JS, sem build step |
-| `favicon.svg` | O símbolo da marca (gradientes por faceta), usado como favicon |
+| `index.html` | The whole page — HTML + CSS + JS, no build step |
+| `favicon.svg` | The brand symbol (per-facet gradients), used as favicon |
+| `functions/api/contact.js` | Cloudflare Pages Function backing the contact form (`POST /api/contact`) |
 
-## Estrutura da página
+## Page structure
 
-- **Hero** — o símbolo constrói-se peça a peça (**C → P → S**), os gradientes acendem com o glow dourado, segura o logo completo ~4 s e faz loop suave.
-- **Contacto** — formulário (nome, email, empresa, mensagem) + detalhes (email, morada, web).
-- **Footer** — razão social e NIPC.
-- **Toggle PT/EN** — alterna toda a copy da página.
+- **Hero** — the symbol builds piece by piece (**C → P → S**), the per-facet
+  gradients light up with the gold glow, the full logo holds ~4 s, then loops.
+  The whole build → hold → dissolve → rebuild cycle is pure CSS keyframes, so the
+  loop seam lands on the blank frame (no flicker on restart).
+- **Contact** — form (name, email, company, message) + details (email, address, web).
+- **Footer** — legal name and NIPC.
+- **PT/EN toggle** — switches all copy on the page.
 
-## Abrir localmente
+## Run locally
 
-É estático — basta abrir `index.html` no browser. Para testar com servidor:
+It is static, so opening `index.html` in a browser shows the page. To also run
+the contact Function locally, use Wrangler (it serves `functions/` too):
 
 ```sh
-cd canelas-pais-silva-website
-python3 -m http.server 8000   # → http://localhost:8000
+npx wrangler pages dev .
 ```
 
-## Activar o formulário (Formspree)
-
-O formulário está cablado para o [Formspree](https://formspree.io) mas em **modo
-demo** (mostra o sucesso sem enviar nada). Para o pôr a funcionar a sério:
-
-1. Cria conta gratuita em formspree.io (50 mensagens/mês no plano free).
-2. **+ New Form** → copia o endpoint (ex.: `https://formspree.io/f/xpwzqabc`).
-3. Em `index.html`, substitui `YOUR_FORM_ID` na constante `FORMSPREE_URL`.
+For local form testing, use the Turnstile **test keys** (always pass): sitekey
+`1x00000000000000000000AA` in `index.html`, secret `1x0000000000000000000000000000000AA`
+as `TURNSTILE_SECRET_KEY`.
 
 ## Deploy (Cloudflare Pages)
 
-O DNS do domínio está no Cloudflare, por isso o deploy mais simples é o
-**Cloudflare Pages** (HTTPS automático, apex nativo, sem configuração de SSL):
+DNS for the domain is on Cloudflare, so the simplest deploy is **Cloudflare Pages**
+(automatic HTTPS, native apex, no SSL configuration):
 
 1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** →
-   **Connect to Git** → escolhe este repo.
-2. Build settings: **Framework preset = None**, **Build command =** (vazio),
-   **Output directory =** `/` (a raiz — o site é estático, não tem build).
-3. Após o primeiro deploy: **Custom domains** → adiciona `www.canelaspais-silva.pt`
-   (e o apex `canelaspais-silva.pt` com redirect para o `www`, ou vice-versa).
-   O Cloudflare cria os registos e o certificado sozinho.
+   **Connect to Git** → pick this repo.
+2. Build settings: **Framework preset = None**, **Build command =** (empty),
+   **Output directory =** `/` (the root — the site has no build).
+3. After the first deploy: **Custom domains** → add `www.canelaspais-silva.pt`
+   (and the apex `canelaspais-silva.pt` redirecting to `www`, or vice-versa).
+   Cloudflare creates the DNS records and certificate automatically.
 
-Cada `git push` para `main` redeploya automaticamente.
+Every push to `main` redeploys automatically.
 
-## Acessibilidade
+## Contact form setup
 
-Respeita `prefers-reduced-motion`: com a opção activa, o logo aparece já
-completo e a animação/loop não corre.
+The form posts to the Cloudflare Pages Function at `/api/contact`, which:
+1. verifies the **Turnstile** token server-side (privacy-friendly CAPTCHA, no
+   user tracking), then
+2. relays the message by email via **Resend**.
+
+No third-party form service stores the submission — data only transits Cloudflare
+(your own infra) and your email provider.
+
+### One-time setup
+
+1. **Turnstile** — Cloudflare dashboard → **Turnstile** → add a widget for
+   `canelaspais-silva.pt`. You get a **sitekey** (public) and a **secret**.
+   - Put the sitekey in `index.html` (replace `YOUR_TURNSTILE_SITEKEY`).
+   - Put the secret in the Pages project env as `TURNSTILE_SECRET_KEY`.
+2. **Resend** — create an account at [resend.com](https://resend.com), then
+   **verify the domain** `canelaspais-silva.pt` (add the DNS records it gives you
+   in Cloudflare — takes a couple of minutes). Create an API key.
+   - Put the API key in the Pages project env as `RESEND_API_KEY`.
+3. **Pages env vars** — in the Pages project → **Settings → Environment variables**,
+   add (mark the secrets as encrypted):
+
+   | Variable | Value |
+   |---|---|
+   | `TURNSTILE_SECRET_KEY` | Turnstile secret |
+   | `RESEND_API_KEY` | Resend API key |
+   | `CONTACT_TO` | *(optional)* recipient — default `info@canelaspais-silva.pt` |
+   | `CONTACT_FROM` | *(optional)* verified sender — default `Website <site@canelaspais-silva.pt>` |
+
+The visitor's email goes into the message's `reply_to`, so you can reply directly.
+
+## Privacy / GDPR
+
+The form collects name + email (personal data). A short privacy note sits next to
+the submit button. Submissions are not stored by any third party; they are emailed
+to you and kept only in your mailbox. If you later add a privacy policy page, link
+it from that note.
+
+## Accessibility
+
+Respects `prefers-reduced-motion`: with it on, the logo appears already complete
+and the build/loop does not run.
