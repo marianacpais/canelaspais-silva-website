@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 479 672">
+  <defs>
+    <linearGradient id="f-mast" x1="290" y1="40" x2="448" y2="272" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1C5237"/><stop offset=".52" stop-color="#7A7528"/><stop offset="1" stop-color="#F0B73B"/>
+    </linearGradient>
+    <linearGradient id="f-roof" x1="380" y1="200" x2="62" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#16482F"/><stop offset=".72" stop-color="#16482F"/><stop offset="1" stop-color="#4A5A20"/>
+    </linearGradient>
+    <linearGradient id="f-bb" x1="127" y1="686" x2="300" y2="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8B7830"/><stop offset="1" stop-color="#16482F"/>
+    </linearGradient>
+    <linearGradient id="f-bf" x1="204" y1="505" x2="99" y2="348" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F0B73B"/><stop offset="1" stop-color="#6B7A28"/>
+    </linearGradient>
+  </defs>
+  <path d="M241,469L277,490L289,506L290,524L216,655L204,666L193,670L42,670L1,598L165,598L203,532Z" fill="url(#f-bb)"/>
+  <path d="M203,532L76,458L68,450L62,437L62,341L131,301L132,300L134,407L241,469Z" fill="url(#f-bf)"/>
+  <path d="M230,129L242,129L257,135L378,205L378,289L235,207L62,310L62,239L70,223L218,133L229,130Z" fill="url(#f-roof)"/>
+  <path d="M236,0L460,129L471,139L478,158L477,250L405,291L405,182L236,84L236,1Z" fill="url(#f-mast)"/>
+</svg>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Canelas Pais &amp; Silva, Lda — Portugal">
+<meta name="theme-color" content="#18140C">
+<title>Canelas Pais &amp; Silva</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Canelas Pais &amp; Silva">
+<meta property="og:description" content="Canelas Pais &amp; Silva, Lda — Portugal">
+<meta property="og:url" content="https://www.canelaspais-silva.pt">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#18140C; --forest:#16482F; --gold:#F0B73B;
+  --paper:#FFFFFF; --warm:#F5F2EC; --ink:#0D1023;
+  --f:'Sora',sans-serif;
+  --ease:cubic-bezier(.25,.46,.45,.94);
+  --cyc:8.7s;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--f);background:var(--bg);color:var(--paper);overflow-x:hidden}
+
+/* ── NAV ─────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:20px 48px;display:flex;align-items:center;justify-content:space-between;
+  transition:background .4s,padding .4s,backdrop-filter .4s;
+}
+nav.scrolled{background:rgba(24,20,12,.88);backdrop-filter:blur(12px);padding:14px 48px}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-logo svg{display:block}
+.nav-wordmark{font-weight:500;font-size:14px;line-height:1.1;color:var(--paper);letter-spacing:-.01em}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-link{font-size:12px;font-weight:500;color:rgba(255,255,255,.55);text-decoration:none;
+  letter-spacing:.04em;text-transform:uppercase;transition:color .2s}
+.nav-link:hover{color:var(--gold)}
+.lang-toggle{display:flex;gap:2px;background:rgba(255,255,255,.07);border-radius:20px;padding:3px}
+.lang-btn{font-family:var(--f);font-size:11px;font-weight:600;padding:4px 10px;
+  border-radius:16px;border:none;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;
+  background:none;color:rgba(255,255,255,.4);transition:all .2s}
+.lang-btn.on{background:rgba(255,255,255,.14);color:var(--paper)}
+
+/* ── HERO ────────────────────────────────────────── */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;background:var(--bg);position:relative;overflow:hidden;padding:80px 24px;
+}
+.hero-inner{display:flex;flex-direction:column;align-items:center;gap:32px;text-align:center}
+.sym-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+#sym{width:110px;height:auto;overflow:visible;transform-origin:center;
+  animation:symPulse var(--cyc) cubic-bezier(.22,1,.36,1) infinite}
+.piece{opacity:0}
+#glow{position:absolute;width:180px;height:230px;left:50%;top:50%;
+  transform:translate(-50%,-50%) scale(.2);opacity:0;pointer-events:none;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(240,183,59,.5) 0%,rgba(22,72,47,.25) 40%,transparent 72%);
+  filter:blur(18px);animation:glowBurst var(--cyc) cubic-bezier(.16,1,.3,1) infinite}
+.hero-text{opacity:0;transform:translateY(18px);
+  animation:heroIn var(--cyc) var(--ease) infinite}
+
+/* ── Symbol build loop (C → P → S, pure CSS so the loop seam lands on the
+      blank frame — no JS teardown, no compositor flash on restart) ──── */
+#g-roof  {animation:enterRoof   var(--cyc) var(--ease) infinite}
+#g-bfront{animation:enterBfront var(--cyc) var(--ease) infinite}
+#g-mast  {animation:enterMast   var(--cyc) var(--ease) infinite}
+#g-bback {animation:enterBback  var(--cyc) var(--ease) infinite}
+#d-roof,#d-bfront,#d-mast,#d-bback{animation:solidOut var(--cyc) cubic-bezier(.4,0,.2,1) infinite}
+#gr-roof,#gr-bfront,#gr-mast,#gr-bback{animation:gradIn var(--cyc) cubic-bezier(.4,0,.2,1) infinite}
+
+@keyframes enterRoof{
+  0%,2.3%{opacity:0;transform:translate(12px,-6px)}
+  9.43%,86.21%{opacity:1;transform:translate(0,0)}
+  91.95%,100%{opacity:0;transform:translate(0,0)}}
+@keyframes enterBfront{
+  0%,7.8%{opacity:0;transform:translate(-10px,12px)}
+  14.94%,86.21%{opacity:1;transform:translate(0,0)}
+  91.95%,100%{opacity:0;transform:translate(0,0)}}
+@keyframes enterMast{
+  0%,14.94%{opacity:0;transform:translate(10px,-14px)}
+  22.07%,86.21%{opacity:1;transform:translate(0,0)}
+  91.95%,100%{opacity:0;transform:translate(0,0)}}
+@keyframes enterBback{
+  0%,21.84%{opacity:0;transform:translate(4px,14px)}
+  28.97%,86.21%{opacity:1;transform:translate(0,0)}
+  91.95%,100%{opacity:0;transform:translate(0,0)}}
+/* gradient crossfade — solid dark hands off to the per-facet gradient at 29% */
+@keyframes solidOut{0%,28.97%{opacity:1}37.01%,100%{opacity:0}}
+@keyframes gradIn{0%,28.97%{opacity:0}37.01%,100%{opacity:1}}
+/* glow burst + brightness pulse on reveal */
+@keyframes glowBurst{
+  0%,28.97%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+  31.49%{opacity:.9;transform:translate(-50%,-50%) scale(1)}
+  41.61%{opacity:0;transform:translate(-50%,-50%) scale(2)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(.2)}}
+@keyframes symPulse{
+  0%,28.97%{transform:scale(1);filter:brightness(1)}
+  31.49%{transform:scale(1.06);filter:brightness(1.4)}
+  39%,100%{transform:scale(1);filter:brightness(1)}}
+/* wordmark fades in after the symbol, holds, then dissolves with it */
+@keyframes heroIn{
+  0%,35.63%{opacity:0;transform:translateY(18px)}
+  43.68%,86.21%{opacity:1;transform:translateY(0)}
+  91.72%,100%{opacity:0;transform:translateY(-8px)}}
+.hero-company{font-size:clamp(28px,5vw,52px);font-weight:500;line-height:1.1;letter-spacing:-.02em}
+.hero-location{font-size:14px;color:rgba(255,255,255,.35);letter-spacing:.12em;text-transform:uppercase;margin-top:8px}
+.scroll-cue{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  opacity:0;cursor:pointer;animation:cueIn 1s var(--ease) 3.1s forwards}
+@keyframes cueIn{to{opacity:1}}
+.scroll-cue span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.scroll-arrow{width:1px;height:32px;background:linear-gradient(to bottom,transparent,rgba(240,183,59,.6));
+  animation:scrollpulse 2s ease-in-out infinite}
+@keyframes scrollpulse{0%,100%{opacity:.4;transform:scaleY(.6) translateY(-4px)}50%{opacity:1;transform:scaleY(1) translateY(0)}}
+
+/* ── CONTACT SECTION ─────────────────────────────── */
+#contacto{
+  background:var(--warm);color:var(--ink);
+  padding:100px 48px;
+}
+.contact-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.contact-left .section-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(13,16,35,.35);margin-bottom:16px}
+.contact-left h2{font-size:clamp(32px,4vw,48px);font-weight:600;line-height:1.1;
+  letter-spacing:-.02em;color:var(--ink);margin-bottom:20px}
+.contact-left p{font-size:15px;line-height:1.7;color:rgba(13,16,35,.6);max-width:380px;margin-bottom:40px}
+.contact-details{display:flex;flex-direction:column;gap:12px}
+.contact-item{display:flex;align-items:flex-start;gap:12px}
+.ci-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--forest);width:60px;flex-shrink:0;padding-top:2px}
+.ci-val{font-size:14px;color:rgba(13,16,35,.7);line-height:1.5}
+.ci-val a{color:inherit;text-decoration:none;transition:color .2s}
+.ci-val a:hover{color:var(--forest)}
+
+/* form */
+.contact-form{display:flex;flex-direction:column;gap:16px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(13,16,35,.45)}
+.field input,.field textarea,.field select{
+  font-family:var(--f);font-size:14px;padding:13px 16px;
+  border:1.5px solid rgba(13,16,35,.12);border-radius:8px;
+  background:var(--paper);color:var(--ink);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+  -webkit-appearance:none;
+}
+.field input:focus,.field textarea:focus{border-color:var(--forest);box-shadow:0 0 0 3px rgba(22,72,47,.1)}
+.field textarea{resize:vertical;min-height:130px;line-height:1.6}
+.field-full{grid-column:1/-1}
+.submit-btn{
+  font-family:var(--f);font-size:13px;font-weight:600;letter-spacing:.04em;
+  padding:14px 32px;border-radius:8px;border:none;cursor:pointer;align-self:flex-start;
+  background:var(--forest);color:var(--paper);transition:background .2s,transform .15s;
+}
+.submit-btn:hover{background:#1e5e3a;transform:translateY(-1px)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn:disabled{opacity:.6;cursor:default;transform:none}
+.form-success{display:none;text-align:center;padding:32px;background:rgba(22,72,47,.06);
+  border-radius:12px;border:1.5px solid rgba(22,72,47,.15)}
+.form-success .check{font-size:32px;margin-bottom:12px}
+.form-success p{font-size:15px;color:var(--forest);font-weight:500}
+.form-success small{font-size:13px;color:rgba(13,16,35,.5);margin-top:4px;display:block}
+
+/* ── FOOTER ──────────────────────────────────────── */
+footer{
+  background:var(--bg);padding:32px 48px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+}
+footer .ft-left{display:flex;align-items:center;gap:12px}
+footer .ft-logo svg{display:block;opacity:.6}
+footer .ft-company{font-size:12px;color:rgba(255,255,255,.3)}
+footer .ft-reg{font-size:11px;color:rgba(255,255,255,.2);letter-spacing:.02em}
+
+/* ── Scroll reveal ────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.25,.46,.45,.94),transform .7s cubic-bezier(.25,.46,.45,.94)}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* ── Responsive ──────────────────────────────────── */
+@media(max-width:760px){
+  nav{padding:16px 20px}
+  nav.scrolled{padding:12px 20px}
+  .contact-inner{grid-template-columns:1fr;gap:48px}
+  .form-row{grid-template-columns:1fr}
+  footer{padding:24px 20px}
+  #contacto{padding:72px 20px}
+}
+
+/* ── Reduced motion: show the finished logo, skip the build loop ─── */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{transition:none}
+  #sym,#glow,.hero-text,.scroll-arrow,
+  #g-roof,#g-bfront,#g-mast,#g-bback,
+  #d-roof,#d-bfront,#d-mast,#d-bback,
+  #gr-roof,#gr-bfront,#gr-mast,#gr-bback,
+  .scroll-cue{animation:none}
+  #g-roof,#g-bfront,#g-mast,#g-bback{opacity:1;transform:none}
+  #d-roof,#d-bfront,#d-mast,#d-bback{opacity:0}
+  #gr-roof,#gr-bfront,#gr-mast,#gr-bback{opacity:1}
+  .hero-text{opacity:1;transform:none}
+  .scroll-cue{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#hero">
+    <svg width="22" height="31" viewBox="0 0 479 672" aria-hidden="true">
+      <defs>
+        <linearGradient id="n-mast" x1="290" y1="40" x2="448" y2="272" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#1C5237"/><stop offset=".52" stop-color="#7A7528"/><stop offset="1" stop-color="#F0B73B"/>
+        </linearGradient>
+        <linearGradient id="n-roof" x1="380" y1="200" x2="62" y2="300" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#16482F"/><stop offset=".72" stop-color="#16482F"/><stop offset="1" stop-color="#4A5A20"/>
+        </linearGradient>
+        <linearGradient id="n-bb" x1="127" y1="686" x2="300" y2="520" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#8B7830"/><stop offset="1" stop-color="#16482F"/>
+        </linearGradient>
+        <linearGradient id="n-bf" x1="204" y1="505" x2="99" y2="348" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#F0B73B"/><stop offset="1" stop-color="#6B7A28"/>
+        </linearGradient>
+      </defs>
+      <path d="M241,469L277,490L289,506L290,524L216,655L204,666L193,670L42,670L1,598L165,598L203,532Z" fill="url(#n-bb)"/>
+      <path d="M203,532L76,458L68,450L62,437L62,341L131,301L132,300L134,407L241,469Z" fill="url(#n-bf)"/>
+      <path d="M230,129L242,129L257,135L378,205L378,289L235,207L62,310L62,239L70,223L218,133L229,130Z" fill="url(#n-roof)"/>
+      <path d="M236,0L460,129L471,139L478,158L477,250L405,291L405,182L236,84L236,1Z" fill="url(#n-mast)"/>
+    </svg>
+    <div class="nav-wordmark">Canelas Pais<br>&amp; Silva</div>
+  </a>
+  <div class="nav-right">
+    <a class="nav-link" href="#contacto" data-pt="Contacto" data-en="Contact">Contacto</a>
+    <div class="lang-toggle">
+      <button class="lang-btn on" data-lang="pt" type="button">PT</button>
+      <button class="lang-btn" data-lang="en" type="button">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="sym-wrap">
+      <div id="glow"></div>
+      <svg id="sym" viewBox="0 0 479 672" xmlns="http://www.w3.org/2000/svg" aria-label="Canelas Pais & Silva">
+        <defs>
+          <linearGradient id="ag-mast" x1="290" y1="40" x2="448" y2="272" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#1C5237"/><stop offset=".52" stop-color="#7A7528"/><stop offset="1" stop-color="#F0B73B"/>
+          </linearGradient>
+          <linearGradient id="ag-roof" x1="380" y1="200" x2="62" y2="300" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#16482F"/><stop offset=".72" stop-color="#16482F"/><stop offset="1" stop-color="#4A5A20"/>
+          </linearGradient>
+          <linearGradient id="ag-bf" x1="204" y1="505" x2="99" y2="348" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#F0B73B"/><stop offset="1" stop-color="#6B7A28"/>
+          </linearGradient>
+          <linearGradient id="ag-bb" x1="127" y1="686" x2="300" y2="520" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#8B7830"/><stop offset="1" stop-color="#16482F"/>
+          </linearGradient>
+        </defs>
+        <g id="g-bback" class="piece">
+          <path id="d-bback" d="M241,469L277,490L289,506L290,524L216,655L204,666L193,670L42,670L1,598L165,598L203,532Z" fill="#1C2A18"/>
+          <path id="gr-bback" d="M241,469L277,490L289,506L290,524L216,655L204,666L193,670L42,670L1,598L165,598L203,532Z" fill="url(#ag-bb)" opacity="0"/>
+        </g>
+        <g id="g-bfront" class="piece">
+          <path id="d-bfront" d="M203,532L76,458L68,450L62,437L62,341L131,301L132,300L134,407L241,469Z" fill="#1C2A18"/>
+          <path id="gr-bfront" d="M203,532L76,458L68,450L62,437L62,341L131,301L132,300L134,407L241,469Z" fill="url(#ag-bf)" opacity="0"/>
+        </g>
+        <g id="g-roof" class="piece">
+          <path id="d-roof" d="M230,129L242,129L257,135L378,205L378,289L235,207L62,310L62,239L70,223L218,133L229,130Z" fill="#1C2A18"/>
+          <path id="gr-roof" d="M230,129L242,129L257,135L378,205L378,289L235,207L62,310L62,239L70,223L218,133L229,130Z" fill="url(#ag-roof)" opacity="0"/>
+        </g>
+        <g id="g-mast" class="piece">
+          <path id="d-mast" d="M236,0L460,129L471,139L478,158L477,250L405,291L405,182L236,84L236,1Z" fill="#1C2A18"/>
+          <path id="gr-mast" d="M236,0L460,129L471,139L478,158L477,250L405,291L405,182L236,84L236,1Z" fill="url(#ag-mast)" opacity="0"/>
+        </g>
+      </svg>
+    </div>
+    <div class="hero-text" id="hero-text">
+      <div class="hero-company">Canelas Pais<br>&amp; Silva</div>
+      <div class="hero-location">Portugal</div>
+    </div>
+  </div>
+  <div class="scroll-cue" id="scroll-cue" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">
+    <span data-pt="Contacto" data-en="Contact">Contacto</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contacto">
+  <div class="contact-inner">
+
+    <!-- Left: info -->
+    <div class="contact-left reveal">
+      <div class="section-label" data-pt="Contacto" data-en="Contact">Contacto</div>
+      <h2 data-pt="Fale connosco" data-en="Get in touch">Fale connosco</h2>
+      <p data-pt="Estamos disponíveis para responder às suas questões. Deixe-nos uma mensagem e entraremos em contacto brevemente." data-en="We are available to answer your questions. Leave us a message and we will get back to you shortly.">
+        Estamos disponíveis para responder às suas questões. Deixe-nos uma mensagem e entraremos em contacto brevemente.
+      </p>
+      <div class="contact-details">
+        <div class="contact-item">
+          <div class="ci-label" data-pt="Email" data-en="Email">Email</div>
+          <div class="ci-val"><a href="mailto:info@canelaspais-silva.pt">info@canelaspais-silva.pt</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-label" data-pt="Morada" data-en="Address">Morada</div>
+          <div class="ci-val">Rua Noelmiro, n.º 115<br>3720-183 Ossela<br>Oliveira de Azeméis</div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-label">Web</div>
+          <div class="ci-val"><a href="https://www.canelaspais-silva.pt" target="_blank" rel="noopener">www.canelaspais-silva.pt</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: form -->
+    <div class="reveal" style="transition-delay:.15s">
+      <form class="contact-form" id="contact-form" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label data-pt="Nome" data-en="Name">Nome</label>
+            <input type="text" name="nome" required placeholder="Eng. João Silva">
+          </div>
+          <div class="field">
+            <label data-pt="Email" data-en="Email">Email</label>
+            <input type="email" name="email" required placeholder="joao@empresa.pt">
+          </div>
+        </div>
+        <div class="field field-full">
+          <label data-pt="Empresa (opcional)" data-en="Company (optional)">Empresa (opcional)</label>
+          <input type="text" name="empresa" placeholder="">
+        </div>
+        <div class="field field-full">
+          <label data-pt="Mensagem" data-en="Message">Mensagem</label>
+          <textarea name="mensagem" required placeholder="" data-pt-placeholder="Como podemos ajudá-lo?" data-en-placeholder="How can we help you?"></textarea>
+        </div>
+        <button class="submit-btn" type="submit">
+          <span data-pt="Enviar mensagem" data-en="Send message">Enviar mensagem</span>
+        </button>
+      </form>
+      <div class="form-success" id="form-success">
+        <div class="check">✓</div>
+        <p data-pt="Mensagem enviada!" data-en="Message sent!">Mensagem enviada!</p>
+        <small data-pt="Entraremos em contacto brevemente." data-en="We'll be in touch shortly.">Entraremos em contacto brevemente.</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-left">
+    <div class="ft-logo">
+      <svg width="18" height="25" viewBox="0 0 479 672" aria-hidden="true">
+        <path d="M241,469L277,490L289,506L290,524L216,655L204,666L193,670L42,670L1,598L165,598L203,532Z" fill="url(#n-bb)"/>
+        <path d="M203,532L76,458L68,450L62,437L62,341L131,301L132,300L134,407L241,469Z" fill="url(#n-bf)"/>
+        <path d="M230,129L242,129L257,135L378,205L378,289L235,207L62,310L62,239L70,223L218,133L229,130Z" fill="url(#n-roof)"/>
+        <path d="M236,0L460,129L471,139L478,158L477,250L405,291L405,182L236,84L236,1Z" fill="url(#n-mast)"/>
+      </svg>
+    </div>
+    <div class="ft-company">Canelas Pais &amp; Silva, Lda</div>
+  </div>
+  <div class="ft-reg">NIPC 519452046 · Ossela, Oliveira de Azeméis</div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// ── Language toggle ────────────────────────────────
+let currentLang = 'pt';
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-pt],[data-en]').forEach(el => {
+    const txt = el.getAttribute('data-' + lang);
+    if (txt) el.textContent = txt;
+  });
+  document.querySelectorAll('[data-pt-placeholder],[data-en-placeholder]').forEach(el => {
+    const ph = el.getAttribute('data-' + lang + '-placeholder');
+    if (ph) el.placeholder = ph;
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('on', b.dataset.lang === lang);
+  });
+}
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLang(btn.dataset.lang));
+});
+
+// ── Nav scroll ─────────────────────────────────────
+const nav = $('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, {passive:true});
+
+// ── Scroll reveal ──────────────────────────────────
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }});
+}, {threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// ── Symbol build loop ───────────────────────────────
+// The build → hold → dissolve → rebuild cycle is driven entirely by the CSS
+// keyframes in <style> (animation … infinite). No JS reset means no compositor
+// desync on the loop seam — see the C→P→S keyframes above.
+
+// ── Contact form ────────────────────────────────────
+// Formspree: create an account at formspree.io, copy your endpoint and replace
+// YOUR_FORM_ID below. While the placeholder is present the form runs in demo
+// mode (shows the success state without sending anything).
+const FORMSPREE_URL = 'https://formspree.io/f/YOUR_FORM_ID';
+
+$('contact-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('.submit-btn');
+  const label = btn.querySelector('[data-pt]');
+  const orig = label.textContent;
+  btn.disabled = true;
+  label.textContent = currentLang === 'pt' ? 'A enviar…' : 'Sending…';
+
+  if (FORMSPREE_URL.includes('YOUR_FORM_ID')) { setTimeout(showSuccess, 800); return; }
+
+  try {
+    const res = await fetch(FORMSPREE_URL, {
+      method: 'POST', body: new FormData(this), headers: { Accept: 'application/json' }
+    });
+    if (res.ok) { showSuccess(); }
+    else { btn.disabled = false; label.textContent = orig; alert(currentLang === 'pt' ? 'Erro. Tente novamente.' : 'Error. Please try again.'); }
+  } catch { btn.disabled = false; label.textContent = orig; alert(currentLang === 'pt' ? 'Sem ligação.' : 'No connection.'); }
+});
+
+function showSuccess() {
+  $('contact-form').style.display = 'none';
+  $('form-success').style.display = 'block';
+}
+</script>
+</body>
+</html>
