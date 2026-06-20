@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 479 672">
   <defs>
     <linearGradient id="f-mast" x1="290" y1="40" x2="448" y2="272" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#1C5237"/><stop offset=".52" stop-color="#7A7528"/><stop offset="1" stop-color="#F0B73B"/>
+      <stop offset="0" stop-color="#1F794E"/><stop offset=".52" stop-color="#8F8931"/><stop offset="1" stop-color="#F0B73B"/>
     </linearGradient>
     <linearGradient id="f-roof" x1="380" y1="200" x2="62" y2="300" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#16482F"/><stop offset=".72" stop-color="#16482F"/><stop offset="1" stop-color="#4A5A20"/>
+      <stop offset="0" stop-color="#1B7A4C"/><stop offset=".72" stop-color="#1B7A4C"/><stop offset="1" stop-color="#69802E"/>
     </linearGradient>
     <linearGradient id="f-bb" x1="127" y1="686" x2="300" y2="520" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#8B7830"/><stop offset="1" stop-color="#16482F"/>
+      <stop offset="0" stop-color="#8B7830"/><stop offset="1" stop-color="#1B7A4C"/>
     </linearGradient>
     <linearGradient id="f-bf" x1="204" y1="505" x2="99" y2="348" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#F0B73B"/><stop offset="1" stop-color="#6B7A28"/>
+      <stop offset="0" stop-color="#F0B73B"/><stop offset="1" stop-color="#7D8D31"/>
     </linearGradient>
   </defs>
   <path d="M241,469L277,490L289,506L290,524L216,655L204,666L193,670L42,670L1,598L165,598L203,532Z" fill="url(#f-bb)"/>
